@@ -33,3 +33,5 @@ new Vue({
     },
     render: h=>h(App)
 }).$mount('#app');
+
+// new Vue(App).$mount('#app');

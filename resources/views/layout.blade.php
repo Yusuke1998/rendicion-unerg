@@ -4,6 +4,8 @@
 	<title>Vainas</title>
 </head>
 <body>
-	@yield('content')
+	<div id="app">
+		@yield('content')
+	</div>
 </body>
 </html>

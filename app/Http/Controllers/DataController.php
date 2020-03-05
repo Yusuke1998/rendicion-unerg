@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
 use DB;
-
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class DataController extends Controller
 {
@@ -19,7 +19,8 @@ class DataController extends Controller
 
             if (!empty($find->ficha))
             {
-                $data = DB::table('vw_rhnommvd')
+                // Inicio Consulta
+                $allData = DB::table('vw_rhnommvd')
                             ->select(DB::raw('vw_rhnommvd.per_ficha, vw_rhnommvd.*, rhnommvdkp.kon_numerico'))
                             ->join('rhnomrubgrp', function($join)
                                {
@@ -42,9 +43,42 @@ class DataController extends Controller
                             ->where(DB::raw('date_part(\'year\', vw_rhnommvd.nom_hasta)'), '=', '2019')
                             ->where('vw_rhnommvd.fic_id', '=', $find->ficha)
                             ->get();
+                // Fin Consulta
+
+                $months = [
+                    '01'=>'Enero', '02'=>'Febrero', '03'=>'Marzo', 
+                    '04'=>'Abril', '05'=>'Mayo', '06'=>'Junio', 
+                    '07'=>'Julio', '08'=>'Agosto', '09'=>'Septiembre',
+                    '10'=>'Octubre', '11'=>'Noviembre', '12'=>'Diciembre'
+                ];
+
+                $rub_tipo = [];
+                $registersA=[];
+                $registersD=[];
+                foreach ($allData as $data)
+                {
+                    if ($data->rub_tipo === 'A')
+                    {
+                        $date = new Carbon($data->nom_fecha);
+                        $value = $registersA[$months[$date->format('m')]] ?? 0;
+                        $registersA[$months[$date->format('m')]] = $value + $data->rub_monto;
+                        $rub_tipo['Asignaciones'] = $registersA;
+
+                    }elseif ($data->rub_tipo === 'D') 
+                    {
+                        $date = new Carbon($data->nom_fecha);
+                        $value = $registersD[$months[$date->format('m')]] ?? 0;
+                        $registersD[$months[$date->format('m')]] = $value + $data->rub_monto;
+                        $rub_tipo['Deducciones'] = $registersD;
+                    }
+                }
+
+                // dd($rub_tipo);
+                // dd($registersA,$registersD);
+
                 return  response([
                     'status'    =>  'success',
-                    'data'      =>  $data,
+                    'data'      =>  $rub_tipo,
                 ], 200);
             }
         }
