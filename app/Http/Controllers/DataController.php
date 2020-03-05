@@ -19,9 +19,8 @@ class DataController extends Controller
 
             if (!empty($find->ficha))
             {
-                // Inicio Consulta
                 $allData = DB::table('vw_rhnommvd')
-                            ->select(DB::raw('vw_rhnommvd.per_ficha, vw_rhnommvd.*, rhnommvdkp.kon_numerico'))
+                            ->select(DB::raw('vw_rhnommvd.fic_id, vw_rhnommvd.fic_tnombre, vw_rhnommvd.fic_cedula, vw_rhnommvd.per_ficha, vw_rhnommvd.rub_tipo, vw_rhnommvd.rub_codigo, vw_rhnommvd.rub_monto, vw_rhnommvd.nom_codigo, vw_rhnommvd.nom_desde, vw_rhnommvd.nom_hasta, vw_rhnommvd.nom_fecha, vw_rhnommvd.niv_codigo, rhnommvdkp.kon_numerico'))
                             ->join('rhnomrubgrp', function($join)
                                {
                                 $join->on('vw_rhnommvd.rub_codigo', '=', 'rhnomrubgrp.rub_codigo')
@@ -43,7 +42,6 @@ class DataController extends Controller
                             ->where(DB::raw('date_part(\'year\', vw_rhnommvd.nom_hasta)'), '=', '2019')
                             ->where('vw_rhnommvd.fic_id', '=', $find->ficha)
                             ->get();
-                // Fin Consulta
 
                 $months = [
                     '01'=>'Enero', '02'=>'Febrero', '03'=>'Marzo', 
@@ -57,24 +55,22 @@ class DataController extends Controller
                 $registersD=[];
                 foreach ($allData as $data)
                 {
+                    $date = new Carbon($data->nom_hasta);
+
                     if ($data->rub_tipo === 'A')
                     {
-                        $date = new Carbon($data->nom_fecha);
                         $value = $registersA[$months[$date->format('m')]] ?? 0;
                         $registersA[$months[$date->format('m')]] = $value + $data->rub_monto;
                         $rub_tipo['Asignaciones'] = $registersA;
 
-                    }elseif ($data->rub_tipo === 'D') 
+                    }
+                    elseif ($data->rub_tipo === 'D') 
                     {
-                        $date = new Carbon($data->nom_fecha);
                         $value = $registersD[$months[$date->format('m')]] ?? 0;
                         $registersD[$months[$date->format('m')]] = $value + $data->rub_monto;
                         $rub_tipo['Deducciones'] = $registersD;
                     }
                 }
-
-                // dd($rub_tipo);
-                // dd($registersA,$registersD);
 
                 return  response([
                     'status'    =>  'success',
@@ -88,3 +84,7 @@ class DataController extends Controller
                 ], 200);
     }
 }
+
+
+// rub_monto o monto_rub? se filtra por nom_hasta? monto_rub ya tiene restadas las deducciones?
+// monto_rub y rub_monto son diferentes?
