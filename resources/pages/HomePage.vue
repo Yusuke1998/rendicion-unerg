@@ -20,18 +20,21 @@
 				            <v-text-field
 				            	@keyup.enter="search()"
 				            	v-model="cedula"
-				            	name="cedula"
-              					class="input-group--focused"
 				            	label="Cedula"
+				            	hint="Debes ingresar 7 o 8 digitos!"
+				            	min="7"
+				            	max="8"
 				            ></v-text-field>
 				          </v-flex>
 				        </v-layout>
 					</v-card-text>
-					<v-card-actions class="info text-xs-right">
-	                	<v-btn
-	                		primary dark
-	                		:small="true"
-	                		@click.prevent="search()">Buscar</v-btn>
+					<v-card-actions class="text-xs-right">
+						<v-flex xs12>
+		                	<v-btn
+		                		class="float-right cyan"
+		                		:small="true"
+		                		@click.prevent="search()">Buscar</v-btn>
+		                </v-flex>
 	            	</v-card-actions>
 				</v-card>
 			</v-flex>
@@ -49,9 +52,14 @@
 			</v-flex>
 
 			<v-flex xs12>
-				<v-btn @click="pdf()" class="float-right btn btn-sm btn-warning">
-					PDF
-				</v-btn>
+				<v-btn 
+					@click="reset()" 
+					class="float-left teal">
+					VOLVER</v-btn>
+				<v-btn 
+					@click="pdf()" 
+					class="float-right indigo">
+					PDF</v-btn>
 			</v-flex>
 		</v-layout>
 
@@ -93,7 +101,7 @@
 		        <v-subheader>{{ asignaciones.octubre }} Bs.</v-subheader>
 		        <v-subheader>{{ asignaciones.noviembre }} Bs.</v-subheader>
 		        <v-subheader>{{ asignaciones.diciembre }} Bs.</v-subheader>
-		        <v-footer class="mt-5">TOTAL &nbsp<span>{{ asignaciones.total }} Bs.</span></v-footer>
+		        <v-footer class="mt-5">TOTAL: &nbsp<span>{{ asignaciones.total }} Bs.</span></v-footer>
 		      </v-card>
 		    </v-flex>
 		</v-layout>
@@ -134,8 +142,14 @@ export default {
 				this.asignaciones = ok.data.asignaciones;
             	this.$alertify.success('Busqueda exitosa!')
 				return;
-			}else{
+			}
+			else if (ok.status==201)
+			{
             	this.$alertify.warning('Sin resultados!')
+			}
+			else
+			{
+            	this.$alertify.error('Ha ocurrido un error!')
 			}
 			this.loading = false;
 			this.showSearch = true;
@@ -162,6 +176,27 @@ export default {
 						alignment: 'center',
 						style: 'header'
 			        },
+					{	columns: [
+							{
+								text: 'CI: '+data.cedula,
+								width: 100,
+								alignment: 'center',
+								style: 'leyend'
+							},
+							{
+								text: 'NOMBRE: '+data.nombre,
+								width: '*',
+								alignment: 'center',
+								style: 'leyend'
+							},
+							{
+								text: 'PERIODO: '+data.periodo,
+								width: 100,
+								alignment: 'center',
+								style: 'leyend'
+							}
+						]
+					},
 			    	{
 						text: 'ARC',
 						width: '*',
@@ -190,7 +225,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: this.asignaciones.enero,
+								text: data.enero+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -204,7 +239,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: this.asignaciones.febrero,
+								text: data.febrero+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -218,7 +253,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: this.asignaciones.marzo,
+								text: data.marzo+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -232,7 +267,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: this.asignaciones.abril,
+								text: data.abril+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -246,7 +281,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: this.asignaciones.mayo,
+								text: data.mayo+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -260,7 +295,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: this.asignaciones.junio,
+								text: data.junio+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -274,7 +309,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: this.asignaciones.julio,
+								text: data.julio+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -288,7 +323,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: this.asignaciones.agosto,
+								text: data.agosto+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -302,7 +337,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: this.asignaciones.septiembre,
+								text: data.septiembre+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -316,7 +351,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: this.asignaciones.octubre,
+								text: data.octubre+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -330,7 +365,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: this.asignaciones.noviembre,
+								text: data.noviembre+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -344,7 +379,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: this.asignaciones.diciembre,
+								text: data.diciembre+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -353,12 +388,10 @@ export default {
 					{
 						columns: [
 							{
-								text: 'TOTAL',
-								alignment: 'left',
-								style: 'columsubheader'
+								
 							},
 							{
-								text: this.asignaciones.total,
+								text: 'TOTAL: '+data.total+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -367,25 +400,30 @@ export default {
 			    ],
 			    styles: {
 					header: {
-						fontSize: 15,
+						fontSize: 12,
 						bold: true,
 						margin: [0, 0, 0, 10]
 					},
 					subheader: {
-						fontSize: 12,
+						fontSize: 10,
 						bold: true,
+						margin: [0, 10, 0, 5]
+					},
+					leyend: {
+						fontSize: 10,
+						bold: false,
 						margin: [0, 10, 0, 5]
 					},
 					small:{
 						fontSize: 8,
 					},
 					columheader: {
-						fontSize: 12,
+						fontSize: 10,
 						bold: true,
 						margin: [0, 10, 0, 5]
 					},
 					columsubheader: {
-						fontSize: 11,
+						fontSize: 10,
 						bold: false,
 						margin: [0, 10, 0, 5]
 					}
@@ -393,10 +431,18 @@ export default {
 			}
 			pdfMake.createPdf(dPaDtFa).open();
 		},
+		// Imprimiendo pdf
 		pdf()
 		{
 			pdfMake.vfs = pdfFonts.pdfMake.vfs;
 			this.print(this.asignaciones);
+		},
+		reset()
+		{
+			this.showSearch 	= true
+			this.loading 		= false
+			this.cedula 		= ''
+			this.asignaciones 	= []
 		}
 	}
 }
