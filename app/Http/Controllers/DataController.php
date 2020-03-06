@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class DataController extends Controller
 {
+    public function index()
+    {
+        return view('app');
+    }
+
     public function search(Request $request)
     {
         $this->validate($request, [

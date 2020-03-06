@@ -138,8 +138,14 @@ export default {
 		async search()
 		{
 			this.loading = true;
+			let host = window.location.href
+			if (host.indexOf('/public') !== -1) 
+			{
+				host = host.split('/public')[0]+'/public/'
+			}
+			host = host+'buscar-cedula'
 			try {
-				const ok = (await axios.post('/buscar-cedula',{'cedula':this.cedula}))
+				const ok = (await axios.post(host,{'cedula':this.cedula}))
 				if (ok.status==200)
 				{
 					this.showSearch = false;
