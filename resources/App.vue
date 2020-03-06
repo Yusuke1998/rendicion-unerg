@@ -1,7 +1,7 @@
 <template>
   <v-app id="inspire">
 
-    <v-navigation-drawer
+    <<!-- v-navigation-drawer
       v-model="drawer"
       app
       clipped>
@@ -15,10 +15,10 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
 
     <v-app-bar app clipped-left>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> -->
       <v-toolbar-title>CONSULTA - ARC</v-toolbar-title>
     </v-app-bar>
 

@@ -9,6 +9,10 @@ class DataController extends Controller
 {
     public function search(Request $request)
     {
+        $this->validate($request, [
+            'cedula' => 'integer'
+        ]);
+
         $dateNowSub = Carbon::now()
                         ->subYear()
                         ->format('Y');

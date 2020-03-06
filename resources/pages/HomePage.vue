@@ -21,6 +21,7 @@
 				            	@keyup.enter="search()"
 				            	v-model="cedula"
 				            	label="Cedula"
+				            	required
 				            	hint="Debes ingresar 7 o 8 digitos!"
 				            	min="7"
 				            	max="8"
@@ -41,17 +42,7 @@
 		</v-layout>
 
 		<v-layout v-if="!showSearch" row mt5>
-			<v-flex xs2>
-				<p class="h4 text-center">CI: {{ asignaciones.cedula }}</p>
-			</v-flex>
-			<v-flex xs8>
-				<p class="h4 text-center">NOMBRE: {{ asignaciones.nombre }}</p>
-			</v-flex>
-			<v-flex xs2>
-				<p class="h5 text-center">PERIODO: {{ asignaciones.periodo }}</p>
-			</v-flex>
-
-			<v-flex xs12>
+			<v-flex xs12 class="py-5">
 				<v-btn 
 					@click="reset()" 
 					class="float-left teal">
@@ -61,6 +52,18 @@
 					class="float-right indigo">
 					PDF</v-btn>
 			</v-flex>
+			
+			<v-layout row class="py-2">
+				<v-flex xs2>
+					<p class="h4 text-center">CI: {{ asignaciones.cedula }}</p>
+				</v-flex>
+				<v-flex xs8>
+					<p class="h4 text-center">NOMBRE: {{ asignaciones.nombre }}</p>
+				</v-flex>
+				<v-flex xs2>
+					<p class="h5 text-center">PERIODO: {{ asignaciones.periodo }}</p>
+				</v-flex>
+			</v-layout>
 		</v-layout>
 
 		<v-layout v-if="!showSearch" row mt5>
@@ -135,21 +138,24 @@ export default {
 		async search()
 		{
 			this.loading = true;
-			const ok = (await axios.post('/buscar-cedula',{'cedula':this.cedula}))
-			if (ok.status==200)
-			{
-				this.showSearch = false;
-				this.asignaciones = ok.data.asignaciones;
-            	this.$alertify.success('Busqueda exitosa!')
-				return;
+			try {
+				const ok = (await axios.post('/buscar-cedula',{'cedula':this.cedula}))
+				if (ok.status==200)
+				{
+					this.showSearch = false;
+					this.asignaciones = ok.data.asignaciones;
+	            	this.$alertify.success('Busqueda exitosa!')
+					return;
+				}
+				else if (ok.status==201)
+				{
+	            	this.$alertify.warning('Sin resultados!')
+				}
 			}
-			else if (ok.status==201)
+			catch(e)
 			{
-            	this.$alertify.warning('Sin resultados!')
-			}
-			else
-			{
-            	this.$alertify.error('Ha ocurrido un error!')
+            	this.$alertify.error('Solo puedes ingresar números!')
+				console.log(e)
 			}
 			this.loading = false;
 			this.showSearch = true;
