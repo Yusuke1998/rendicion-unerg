@@ -9,18 +9,32 @@ class DataController extends Controller
 {
     public function search(Request $request)
     {
+        $dateNowSub = Carbon::now()
+                        ->subYear()
+                        ->format('Y');
+        $periodo = $dateNowSub;
         $cedula = $request->cedula;
+        $dataJson = [];
+        $registersA=[];
+        $registersD=[];
+        $months = [
+                    '01'=>'enero', '02'=>'febrero', '03'=>'marzo', 
+                    '04'=>'abril', '05'=>'mayo', '06'=>'junio', 
+                    '07'=>'julio', '08'=>'agosto', '09'=>'septiembre',
+                    '10'=>'octubre', '11'=>'noviembre', '12'=>'diciembre'
+                ];
+
         if ($cedula!=='')
         {
             $find = DB::table('rhnomficha')
-                        ->select('fic_id as ficha', 'fic_cedula as cedula')
+                        ->select('fic_id as ficha', 'fic_cedula as cedula', 'fic_tnombre as nombrec')
                         ->where('fic_cedula','=', $cedula)
                         ->first();
 
             if (!empty($find->ficha))
             {
                 $allData = DB::table('vw_rhnommvd')
-                            ->select(DB::raw('vw_rhnommvd.fic_id, vw_rhnommvd.fic_tnombre, vw_rhnommvd.fic_cedula, vw_rhnommvd.per_ficha, vw_rhnommvd.rub_tipo, vw_rhnommvd.rub_codigo, vw_rhnommvd.rub_monto, vw_rhnommvd.nom_codigo, vw_rhnommvd.nom_desde, vw_rhnommvd.nom_hasta, vw_rhnommvd.nom_fecha, vw_rhnommvd.niv_codigo, rhnommvdkp.kon_numerico'))
+                            ->select(DB::raw('vw_rhnommvd.fic_id, vw_rhnommvd.fic_cedula, vw_rhnommvd.per_ficha, vw_rhnommvd.rub_tipo, vw_rhnommvd.rub_codigo, vw_rhnommvd.rub_monto, vw_rhnommvd.nom_codigo, vw_rhnommvd.nom_desde, vw_rhnommvd.nom_hasta, vw_rhnommvd.nom_fecha, vw_rhnommvd.niv_codigo, rhnommvdkp.kon_numerico'))
                             ->join('rhnomrubgrp', function($join)
                                {
                                 $join->on('vw_rhnommvd.rub_codigo', '=', 'rhnomrubgrp.rub_codigo')
@@ -39,52 +53,34 @@ class DataController extends Controller
                             ->where('vw_rhnommvd.emp_codigo', '=', '1')
                             ->where('vw_rhnommvd.nom_clase', '=', '0')
                             ->where('vw_rhnommvd.rub_monto', '>', '0')
-                            ->where(DB::raw('date_part(\'year\', vw_rhnommvd.nom_hasta)'), '=', '2019')
+                            ->where(DB::raw('date_part(\'year\', vw_rhnommvd.nom_hasta)'), '=', $periodo)
                             ->where('vw_rhnommvd.fic_id', '=', $find->ficha)
                             ->get();
 
-                $months = [
-                    '01'=>'Enero', '02'=>'Febrero', '03'=>'Marzo', 
-                    '04'=>'Abril', '05'=>'Mayo', '06'=>'Junio', 
-                    '07'=>'Julio', '08'=>'Agosto', '09'=>'Septiembre',
-                    '10'=>'Octubre', '11'=>'Noviembre', '12'=>'Diciembre'
-                ];
-
-                $rub_tipo = [];
-                $registersA=[];
-                $registersD=[];
                 foreach ($allData as $data)
                 {
                     $date = new Carbon($data->nom_hasta);
-
                     if ($data->rub_tipo === 'A')
                     {
                         $value = $registersA[$months[$date->format('m')]] ?? 0;
                         $registersA[$months[$date->format('m')]] = $value + $data->rub_monto;
-                        $rub_tipo['Asignaciones'] = $registersA;
-
-                    }
-                    elseif ($data->rub_tipo === 'D') 
-                    {
-                        $value = $registersD[$months[$date->format('m')]] ?? 0;
-                        $registersD[$months[$date->format('m')]] = $value + $data->rub_monto;
-                        $rub_tipo['Deducciones'] = $registersD;
+                        $dataJson['asignaciones'] = $registersA;
                     }
                 }
-
-                return  response([
-                    'status'    =>  'success',
-                    'data'      =>  $rub_tipo,
-                ], 200);
+                $dataJson['asignaciones']['total'] = 0;
+                foreach ($dataJson['asignaciones'] as $key => $asignacion)
+                {
+                    $num = $dataJson['asignaciones'][$key];
+                    $dataJson['asignaciones']['total'] += $num;
+                    $str_num = number_format($num, 2, ',', '.');
+                    $dataJson['asignaciones'][$key] = $str_num;
+                }
+                $dataJson['asignaciones']['periodo'] = $periodo;
+                $dataJson['asignaciones']['nombre'] = $find->nombrec;
+                $dataJson['asignaciones']['cedula'] = $find->cedula;
+                return  response($dataJson, 200);
             }
         }
-        return  response([
-                    'status'    =>  'success',
-                    'data'      =>  '[]',
-                ], 200);
+        return  response($dataJson, 201);
     }
 }
-
-
-// rub_monto o monto_rub? se filtra por nom_hasta? monto_rub ya tiene restadas las deducciones?
-// monto_rub y rub_monto son diferentes?
