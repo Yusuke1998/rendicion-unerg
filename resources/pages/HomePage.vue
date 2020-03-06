@@ -92,19 +92,19 @@
 		      	<v-card-title primary-title>
 		          <div class="h5 text-center">REMUNERACIÓN</div>
 		        </v-card-title>
-		        <v-subheader>{{ asignaciones.enero }} Bs.</v-subheader>
-		        <v-subheader>{{ asignaciones.febrero }} Bs.</v-subheader>
-		        <v-subheader>{{ asignaciones.marzo }} Bs.</v-subheader>
-		        <v-subheader>{{ asignaciones.abril }} Bs.</v-subheader>
-		        <v-subheader>{{ asignaciones.mayo }} Bs.</v-subheader>
-		        <v-subheader>{{ asignaciones.junio }} Bs.</v-subheader>
-		        <v-subheader>{{ asignaciones.julio }} Bs.</v-subheader>
-		        <v-subheader>{{ asignaciones.agosto }} Bs.</v-subheader>
-		        <v-subheader>{{ asignaciones.septiembre }} Bs.</v-subheader>
-		        <v-subheader>{{ asignaciones.octubre }} Bs.</v-subheader>
-		        <v-subheader>{{ asignaciones.noviembre }} Bs.</v-subheader>
-		        <v-subheader>{{ asignaciones.diciembre }} Bs.</v-subheader>
-		        <v-footer class="mt-5">TOTAL: &nbsp<span>{{ asignaciones.total }} Bs.</span></v-footer>
+		        <v-subheader>{{ asignaciones.enero || 0 }} Bs.</v-subheader>
+		        <v-subheader>{{ asignaciones.febrero || 0 }} Bs.</v-subheader>
+		        <v-subheader>{{ asignaciones.marzo || 0 }} Bs.</v-subheader>
+		        <v-subheader>{{ asignaciones.abril || 0 }} Bs.</v-subheader>
+		        <v-subheader>{{ asignaciones.mayo || 0 }} Bs.</v-subheader>
+		        <v-subheader>{{ asignaciones.junio || 0 }} Bs.</v-subheader>
+		        <v-subheader>{{ asignaciones.julio || 0 }} Bs.</v-subheader>
+		        <v-subheader>{{ asignaciones.agosto || 0 }} Bs.</v-subheader>
+		        <v-subheader>{{ asignaciones.septiembre || 0 }} Bs.</v-subheader>
+		        <v-subheader>{{ asignaciones.octubre || 0 }} Bs.</v-subheader>
+		        <v-subheader>{{ asignaciones.noviembre || 0 }} Bs.</v-subheader>
+		        <v-subheader>{{ asignaciones.diciembre || 0 }} Bs.</v-subheader>
+		        <v-footer class="mt-5">TOTAL: &nbsp<span>{{ asignaciones.total || 0 }} Bs.</span></v-footer>
 		      </v-card>
 		    </v-flex>
 		</v-layout>
@@ -231,7 +231,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: data.enero+' Bs.',
+								text: data.enero || 0+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -245,7 +245,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: data.febrero+' Bs.',
+								text: data.febrero || 0+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -259,7 +259,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: data.marzo+' Bs.',
+								text: data.marzo || 0+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -273,7 +273,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: data.abril+' Bs.',
+								text: data.abril || 0+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -287,7 +287,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: data.mayo+' Bs.',
+								text: data.mayo || 0+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -301,7 +301,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: data.junio+' Bs.',
+								text: data.junio || 0+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -315,7 +315,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: data.julio+' Bs.',
+								text: data.julio || 0+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -329,7 +329,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: data.agosto+' Bs.',
+								text: data.agosto || 0+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -343,7 +343,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: data.septiembre+' Bs.',
+								text: data.septiembre || 0+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -357,7 +357,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: data.octubre+' Bs.',
+								text: data.octubre || 0+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -371,7 +371,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: data.noviembre+' Bs.',
+								text: data.noviembre || 0+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
@@ -385,7 +385,7 @@ export default {
 								style: 'columsubheader'
 							},
 							{
-								text: data.diciembre+' Bs.',
+								text: data.diciembre || 0+' Bs.',
 								alignment: 'left',
 								style: 'columsubheader'
 							}
